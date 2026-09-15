@@ -2,11 +2,178 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Other branch! Как я провел лето</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Как я провёл лето</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* Шапка сайта с фото */
+        .hero {
+            background: linear-gradient(135deg, #56ccf2, #2f80ed);
+            color: #fff;
+            padding: 60px 0;
+        }
+
+        .hero img {
+            max-width: 280px;
+            width: 100%;
+            border-radius: 50%;
+            border: 6px solid #fff;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            object-fit: cover;
+            background: #fff;
+        }
+
+        .card {
+            border: none;
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .emoji-badge {
+            font-size: 2.2rem;
+            line-height: 1;
+        }
+
+        footer {
+            background: #212529;
+            color: #adb5bd;
+        }
+    </style>
 </head>
 <body>
-    <h1>Как я провел лето</h1>
-    <p>Это было потрясающее лето!</p>
-    <p>Я много работал и много отдыхал. Вообще лето классная вещь!!</p>
+
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">☀ Моё лето</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#about">Обо мне</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#places">Где я был</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#impressions">Впечатления</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Шапка с фото -->
+    <header class="hero" id="about">
+        <div class="container">
+            <div class="row align-items-center g-4">
+                <div class="col-12 col-md-4 text-center">
+                    <!-- ЗАМЕНИТЕ путь ниже на своё фото, например: images/me.jpg -->
+                    <img src="me.jpg" alt="Моё фото">
+                </div>
+                <div class="col-12 col-md-8 text-center text-md-start">
+                    <h1 class="display-5 fw-bold">Привет! Это моё лето ☀️</h1>
+                    <p class="lead mb-2">
+                        Лето прошло круто, классно и весело! Я много ездил на машине,
+                        побывал в Могилёве, Барановичах и, конечно, дома — в Калинковичах.
+                    </p>
+                    <p class="mb-0">
+                        Больше всего запомнился парк животных в Барановичах 🦌
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Где я был -->
+    <section class="py-5" id="places">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold">Где я побывал</h2>
+            <div class="row g-4">
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="emoji-badge mb-2">🏠</div>
+                            <h5 class="card-title">Калинковичи</h5>
+                            <p class="card-text">
+                                Мой родной город и дом. Здесь я отдыхал, гулял с друзьями
+                                и просто наслаждался летними днями.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="emoji-badge mb-2">🏙</div>
+                            <h5 class="card-title">Могилёв</h5>
+                            <p class="card-text">
+                                Красивый город на Днепре. Гулял по центру,
+                                видел исторические места и просто хорошо проводил время.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="emoji-badge mb-2">🦌</div>
+                            <h5 class="card-title">Барановичи</h5>
+                            <p class="card-text">
+                                Особенное место — <strong>парк животных</strong>!
+                                Столько зверей сразу я ещё не видел: олени, лани,
+                                косули и другие обитатели леса.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Впечатления -->
+    <section class="py-5 bg-white" id="impressions">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold">Мои впечатления</h2>
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-8">
+                    <div class="alert alert-primary" role="alert">
+                        🚗 <strong>Много ездил на машине</strong> — дороги, новые города
+                        и любимая музыка в дороге.
+                    </div>
+                    <div class="alert alert-success" role="alert">
+                        🎉 <strong>Весело и классно</strong> — каждый день лета был
+                        наполнен чем-то интересным.
+                    </div>
+                    <div class="alert alert-warning" role="alert">
+                        🦌 <strong>Парк животных в Барановичах</strong> — самое яркое
+                        воспоминание этого лета!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подвал -->
+    <footer class="py-4 text-center">
+        <div class="container">
+            <p class="mb-0">© 2026, Как я провёл лето? Круто, как ещё.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
