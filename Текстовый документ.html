@@ -8,57 +8,588 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Шрифт -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+        /* ============ ПЕРЕМЕННЫЕ ============ */
+        :root {
+            --blue:   #2f80ed;
+            --sky:    #56ccf2;
+            --violet: #8b5cf6;
+            --sun:    #fbbf24;
+            --ink:    #0f172a;
+            --muted:  #64748b;
+            --bg:     #f6f9ff;
+            --radius: 28px;
+        }
+
+        * { -webkit-tap-highlight-color: transparent; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 90px;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+            color: var(--ink);
+            background: var(--bg);
+            overflow-x: hidden;
         }
 
-        /* Шапка сайта с фото */
-        .hero {
-            background: linear-gradient(135deg, #56ccf2, #2f80ed);
-            color: #fff;
-            padding: 60px 0;
+        /* Мягкие цветные пятна на фоне всей страницы */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background:
+                radial-gradient(620px 420px at 8% 4%,   rgba(86, 204, 242, .22), transparent 62%),
+                radial-gradient(720px 520px at 92% 18%, rgba(139, 92, 246, .16), transparent 62%),
+                radial-gradient(680px 460px at 50% 102%, rgba(251, 191, 36, .16), transparent 62%);
         }
 
-        .hero img {
-            max-width: 280px;
+        ::selection { background: rgba(47, 128, 237, .2); }
+
+        /* ============ ПОЛОСА ПРОКРУТКИ ============ */
+        .progress-top {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px;
             width: 100%;
-            border-radius: 50%;
-            border: 6px solid #fff;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-            object-fit: cover;
-            background: #fff;
+            transform: scaleX(0);
+            transform-origin: left;
+            background: linear-gradient(90deg, var(--sky), var(--blue), var(--violet));
+            z-index: 2000;
+            border-radius: 0 3px 3px 0;
         }
 
-        .card {
+        /* ============ НАВИГАЦИЯ ============ */
+        .navbar {
+            padding: 18px 0;
+            background: transparent;
+            transition: background .35s ease, box-shadow .35s ease, padding .35s ease,
+                        backdrop-filter .35s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 10px 0;
+            background: rgba(255, 255, 255, .78);
+            backdrop-filter: blur(18px) saturate(180%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%);
+            box-shadow: 0 10px 34px -16px rgba(15, 23, 42, .35);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: -.01em;
+            color: var(--ink) !important;
+        }
+
+        .navbar-brand span { color: var(--blue); }
+
+        .navbar .nav-link {
+            position: relative;
+            font-weight: 600;
+            font-size: .95rem;
+            color: var(--ink);
+            padding: 8px 14px !important;
+            opacity: .75;
+            transition: opacity .25s ease, color .25s ease;
+        }
+
+        .navbar .nav-link:hover,
+        .navbar .nav-link.active {
+            opacity: 1;
+            color: var(--blue);
+        }
+
+        .navbar .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 14px; right: 14px; bottom: 2px;
+            height: 2px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--sky), var(--blue));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .35s cubic-bezier(.2, .7, .3, 1);
+        }
+
+        .navbar .nav-link:hover::after,
+        .navbar .nav-link.active::after { transform: scaleX(1); }
+
+        .navbar-toggler {
             border: none;
-            transition: transform .25s ease, box-shadow .25s ease;
+            padding: 6px 10px;
+            box-shadow: none !important;
         }
 
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12) !important;
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%230f172a' stroke-width='2.4' stroke-linecap='round' d='M4 8h22M4 15h22M4 22h22'/%3E%3C/svg%3E");
         }
 
-        .emoji-badge {
-            font-size: 2.2rem;
-            line-height: 1;
+        /* ============ ГЛАВНЫЙ ЭКРАН ============ */
+        .hero {
+            position: relative;
+            padding: 170px 0 110px;
+            overflow: hidden;
         }
 
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 520px; height: 520px;
+            right: -160px; top: -140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(86, 204, 242, .45), transparent 68%);
+            filter: blur(30px);
+            z-index: -1;
+            animation: pulse 9s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1);    opacity: .85; }
+            50%      { transform: scale(1.15); opacity: 1;   }
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: .84rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            color: var(--blue);
+            background: rgba(255, 255, 255, .72);
+            border: 1px solid rgba(47, 128, 237, .18);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 22px -12px rgba(47, 128, 237, .5);
+        }
+
+        .pill .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--blue);
+            box-shadow: 0 0 0 4px rgba(47, 128, 237, .18);
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { transform: scale(1);   }
+            50%      { transform: scale(.7);  }
+        }
+
+        .hero h1 {
+            font-weight: 800;
+            font-size: clamp(2.1rem, 5.2vw, 3.6rem);
+            line-height: 1.08;
+            letter-spacing: -.03em;
+            margin: 22px 0 20px;
+        }
+
+        .grad-text {
+            background: linear-gradient(115deg, var(--blue) 0%, var(--violet) 55%, var(--sky) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-lead {
+            font-size: clamp(1rem, 1.6vw, 1.15rem);
+            color: var(--muted);
+            line-height: 1.75;
+            max-width: 560px;
+        }
+
+        .hero-lead strong { color: var(--ink); font-weight: 700; }
+
+        /* Кнопки */
+        .btn-grad,
+        .btn-ghost {
+            border-radius: 999px;
+            padding: 14px 30px;
+            font-weight: 700;
+            font-size: .95rem;
+            transition: transform .3s cubic-bezier(.2, .7, .3, 1), box-shadow .3s ease,
+                        background .3s ease, color .3s ease, border-color .3s ease;
+        }
+
+        .btn-grad {
+            color: #fff;
+            border: none;
+            background: linear-gradient(120deg, var(--blue), var(--sky));
+            box-shadow: 0 16px 32px -14px rgba(47, 128, 237, .9);
+        }
+
+        .btn-grad:hover {
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 22px 42px -16px rgba(47, 128, 237, 1);
+        }
+
+        .btn-ghost {
+            color: var(--ink);
+            background: rgba(255, 255, 255, .65);
+            border: 1.5px solid rgba(15, 23, 42, .1);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-ghost:hover {
+            color: var(--blue);
+            border-color: rgba(47, 128, 237, .55);
+            transform: translateY(-3px);
+        }
+
+        /* Фото */
+        .hero-photo {
+            position: relative;
+            width: min(330px, 76vw);
+            margin: 0 auto;
+        }
+
+        .photo-ring {
+            position: relative;
+            isolation: isolate;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+        }
+
+        .photo-ring::before {
+            content: '';
+            position: absolute;
+            inset: -7px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg,
+                        var(--sky), var(--blue), var(--violet), var(--sun), var(--sky));
+            animation: spin 12s linear infinite;
+            z-index: 0;
+        }
+
+        .photo-ring::after {
+            content: '';
+            position: absolute;
+            inset: -40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(47, 128, 237, .38), transparent 70%);
+            filter: blur(34px);
+            z-index: -1;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .photo-ring img {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 8px solid #fff;
+            background: #fff;
+            display: block;
+            box-shadow: 0 26px 55px -22px rgba(15, 23, 42, .55);
+        }
+
+        .float-badge {
+            position: absolute;
+            width: 58px; height: 58px;
+            display: grid;
+            place-items: center;
+            font-size: 1.55rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 16px 30px -14px rgba(15, 23, 42, .5);
+            animation: float 4.5s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        .b1 { top: 4%;    left: -6%;  animation-delay: 0s;   }
+        .b2 { bottom: 12%; right: -8%; animation-delay: 1.4s; }
+        .b3 { bottom: -4%; left: 8%;  animation-delay: 2.6s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0)     rotate(0deg);  }
+            50%      { transform: translateY(-14px) rotate(5deg);  }
+        }
+
+        /* ============ СЕКЦИИ ============ */
+        section { padding: 100px 0; }
+
+        .eyebrow {
+            display: inline-block;
+            font-size: .74rem;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--blue);
+            padding: 7px 16px;
+            border-radius: 999px;
+            background: rgba(47, 128, 237, .1);
+        }
+
+        .section-title {
+            font-weight: 800;
+            font-size: clamp(1.75rem, 3.8vw, 2.5rem);
+            letter-spacing: -.025em;
+            margin-top: 14px;
+        }
+
+        .section-sub {
+            color: var(--muted);
+            max-width: 540px;
+            margin: 14px auto 0;
+            line-height: 1.7;
+        }
+
+        /* ============ КАРТОЧКИ ГОРОДОВ ============ */
+        .place-card {
+            position: relative;
+            height: 100%;
+            padding: 40px 30px 34px;
+            text-align: center;
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, .78);
+            border: 1px solid rgba(255, 255, 255, .95);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 24px 48px -30px rgba(15, 23, 42, .45);
+            overflow: hidden;
+            transition: transform .4s cubic-bezier(.2, .7, .3, 1), box-shadow .4s ease;
+        }
+
+        .place-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--sky), var(--blue));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .5s cubic-bezier(.2, .7, .3, 1);
+        }
+
+        .place-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 44px 70px -34px rgba(47, 128, 237, .6);
+        }
+
+        .place-card:hover::before { transform: scaleX(1); }
+
+        .place-icon {
+            width: 78px; height: 78px;
+            margin: 0 auto 22px;
+            display: grid;
+            place-items: center;
+            font-size: 2.1rem;
+            border-radius: 26px;
+            background: linear-gradient(140deg, rgba(86, 204, 242, .25), rgba(47, 128, 237, .15));
+            transition: transform .4s cubic-bezier(.2, .7, .3, 1);
+        }
+
+        .place-card:hover .place-icon { transform: scale(1.1) rotate(-7deg); }
+
+        .place-card.violet .place-icon {
+            background: linear-gradient(140deg, rgba(139, 92, 246, .25), rgba(139, 92, 246, .12));
+        }
+
+        .place-card.sun .place-icon {
+            background: linear-gradient(140deg, rgba(251, 191, 36, .3), rgba(251, 146, 60, .14));
+        }
+
+        .place-card h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -.02em;
+            margin-bottom: 12px;
+        }
+
+        .place-card p {
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: .95rem;
+            margin-bottom: 20px;
+        }
+
+        .place-tag {
+            display: inline-block;
+            font-size: .74rem;
+            font-weight: 800;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 999px;
+            color: var(--blue);
+            background: rgba(47, 128, 237, .1);
+        }
+
+        .place-card.violet .place-tag { color: var(--violet); background: rgba(139, 92, 246, .12); }
+        .place-card.sun .place-tag    { color: #d97706;      background: rgba(251, 191, 36, .18); }
+
+        /* ============ ВПЕЧАТЛЕНИЯ ============ */
+        .impression {
+            display: flex;
+            gap: 22px;
+            align-items: flex-start;
+            padding: 26px 28px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, .8);
+            border: 1px solid rgba(255, 255, 255, .95);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 22px 44px -32px rgba(15, 23, 42, .55);
+            transition: transform .4s cubic-bezier(.2, .7, .3, 1), box-shadow .4s ease;
+        }
+
+        .impression:hover {
+            transform: translateX(8px);
+            box-shadow: 0 30px 54px -32px rgba(47, 128, 237, .6);
+        }
+
+        .imp-icon {
+            flex: 0 0 58px;
+            width: 58px; height: 58px;
+            display: grid;
+            place-items: center;
+            font-size: 1.5rem;
+            border-radius: 18px;
+            background: rgba(47, 128, 237, .12);
+        }
+
+        .impression h4 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: -.01em;
+        }
+
+        .impression p {
+            margin: 0;
+            color: var(--muted);
+            font-size: .94rem;
+            line-height: 1.65;
+        }
+
+        .imp-blue   .imp-icon { background: rgba(47, 128, 237, .13); }
+        .imp-green  .imp-icon { background: rgba(16, 185, 129, .14); }
+        .imp-amber  .imp-icon { background: rgba(251, 191, 36, .18); }
+
+        /* ============ ПОДВАЛ ============ */
         footer {
-            background: #212529;
-            color: #adb5bd;
+            position: relative;
+            padding: 60px 0 34px;
+            color: #94a3b8;
+            background: linear-gradient(180deg, #0f172a, #0b1220);
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--sky), var(--blue), var(--violet), var(--sun));
+        }
+
+        .footer-brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #fff;
+            letter-spacing: -.02em;
+        }
+
+        .footer-note {
+            font-size: .9rem;
+            margin: 14px 0 0;
+        }
+
+        /* ============ КНОПКА НАВЕРХ ============ */
+        .to-top {
+            position: fixed;
+            right: 22px; bottom: 22px;
+            width: 50px; height: 50px;
+            display: grid;
+            place-items: center;
+            font-size: 1.2rem;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(140deg, var(--blue), var(--sky));
+            box-shadow: 0 16px 30px -12px rgba(47, 128, 237, .95);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(14px) scale(.85);
+            transition: opacity .35s ease, transform .35s cubic-bezier(.2, .7, .3, 1);
+            z-index: 1500;
+        }
+
+        .to-top.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+
+        .to-top:hover { transform: translateY(-4px) scale(1.06); }
+
+        /* ============ АНИМАЦИЯ ПОЯВЛЕНИЯ ============ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(34px);
+            transition: opacity .8s cubic-bezier(.2, .7, .3, 1),
+                        transform .8s cubic-bezier(.2, .7, .3, 1);
+            transition-delay: var(--d, 0s);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* ============ АДАПТИВ ============ */
+        @media (max-width: 991.98px) {
+            .hero { padding: 140px 0 80px; text-align: center; }
+            .hero-lead { margin-left: auto; margin-right: auto; }
+            section { padding: 76px 0; }
+            .hero-photo { margin-top: 56px; }
+            .impression:hover { transform: none; }
+        }
+
+        @media (max-width: 575.98px) {
+            .float-badge { width: 48px; height: 48px; font-size: 1.25rem; border-radius: 16px; }
+            .b1 { left: -2%; }
+            .b2 { right: -2%; }
+            .impression { gap: 16px; padding: 22px 20px; }
+            .imp-icon { flex-basis: 50px; width: 50px; height: 50px; font-size: 1.3rem; }
+            .btn-grad, .btn-ghost { width: 100%; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .001ms !important;
+            }
+            html { scroll-behavior: auto; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Полоса прогресса -->
+    <div class="progress-top" id="progressBar"></div>
+
     <!-- Навигация -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">☀ Моё лето</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <a class="navbar-brand" href="#about">☀ Моё <span>лето</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navMenu" aria-controls="navMenu"
+                    aria-expanded="false" aria-label="Меню">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navMenu">
@@ -71,72 +602,98 @@
         </div>
     </nav>
 
-    <!-- Шапка с фото -->
+    <!-- Главный экран -->
     <header class="hero" id="about">
         <div class="container">
-            <div class="row align-items-center g-4">
-                <div class="col-12 col-md-4 text-center">
-                    <!-- ЗАМЕНИТЕ путь ниже на своё фото, например: images/me.jpg -->
-                    <img src="me.jpg" alt="Моё фото">
-                </div>
-                <div class="col-12 col-md-8 text-center text-md-start">
-                    <h1 class="display-5 fw-bold">Привет! Это моё лето ☀️</h1>
-                    <p class="lead mb-2">
-                        Лето прошло круто, классно и весело! Я много ездил на машине,
+            <div class="row align-items-center g-5">
+
+                <div class="col-12 col-lg-7">
+                    <span class="pill reveal"><span class="dot"></span> Лето 2026 · Беларусь</span>
+
+                    <h1 class="reveal" style="--d:.08s">
+                        Привет! Это <span class="grad-text">моё лето</span> ☀️
+                    </h1>
+
+                    <p class="hero-lead reveal" style="--d:.16s">
+                        Лето прошло <strong>круто, классно и весело</strong>! Я много ездил на машине,
                         побывал в Могилёве, Барановичах и, конечно, дома — в Калинковичах.
                     </p>
-                    <p class="mb-0">
-                        Больше всего запомнился парк животных в Барановичах 🦌
+
+                    <p class="hero-lead reveal" style="--d:.24s">
+                        Больше всего запомнился <strong>парк животных в Барановичах</strong> 🦌
                     </p>
+
+                    <div class="d-flex flex-column flex-sm-row gap-3 mt-4 justify-content-center justify-content-lg-start reveal"
+                         style="--d:.32s">
+                        <a href="#places" class="btn btn-grad">Посмотреть маршрут</a>
+                        <a href="#impressions" class="btn btn-ghost">Мои впечатления</a>
+                    </div>
                 </div>
+
+                <div class="col-12 col-lg-5">
+                    <div class="hero-photo reveal" style="--d:.2s">
+                        <div class="photo-ring">
+                            <!-- ЗАМЕНИТЕ путь ниже на своё фото, например: images/me.jpg -->
+                            <img src="me.jpg" alt="Моё фото">
+                        </div>
+                        <span class="float-badge b1">🏠</span>
+                        <span class="float-badge b2">🦌</span>
+                        <span class="float-badge b3">🚗</span>
+                    </div>
+                </div>
+
             </div>
         </div>
     </header>
 
     <!-- Где я был -->
-    <section class="py-5" id="places">
+    <section id="places">
         <div class="container">
-            <h2 class="text-center mb-5 fw-bold">Где я побывал</h2>
+            <div class="text-center mb-5 reveal">
+                <span class="eyebrow">Маршрут</span>
+                <h2 class="section-title">Где я побывал</h2>
+                <p class="section-sub">
+                    Три точки на карте, которые сделали это лето по-настоящему особенным
+                </p>
+            </div>
+
             <div class="row g-4">
 
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body text-center">
-                            <div class="emoji-badge mb-2">🏠</div>
-                            <h5 class="card-title">Калинковичи</h5>
-                            <p class="card-text">
-                                Мой родной город и дом. Здесь я отдыхал, гулял с друзьями
-                                и просто наслаждался летними днями.
-                            </p>
-                        </div>
-                    </div>
+                    <article class="place-card reveal" style="--d:.05s">
+                        <div class="place-icon">🏠</div>
+                        <h3>Калинковичи</h3>
+                        <p>
+                            Мой родной город и дом. Здесь я отдыхал, гулял с друзьями
+                            и просто наслаждался летними днями.
+                        </p>
+                        <span class="place-tag">Родной город</span>
+                    </article>
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body text-center">
-                            <div class="emoji-badge mb-2">🏙</div>
-                            <h5 class="card-title">Могилёв</h5>
-                            <p class="card-text">
-                                Красивый город на Днепре. Гулял по центру,
-                                видел исторические места и просто хорошо проводил время.
-                            </p>
-                        </div>
-                    </div>
+                    <article class="place-card violet reveal" style="--d:.15s">
+                        <div class="place-icon">🏙</div>
+                        <h3>Могилёв</h3>
+                        <p>
+                            Красивый город на Днепре. Гулял по центру,
+                            видел исторические места и просто хорошо проводил время.
+                        </p>
+                        <span class="place-tag">Город на Днепре</span>
+                    </article>
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body text-center">
-                            <div class="emoji-badge mb-2">🦌</div>
-                            <h5 class="card-title">Барановичи</h5>
-                            <p class="card-text">
-                                Особенное место — <strong>парк животных</strong>!
-                                Столько зверей сразу я ещё не видел: олени, лани,
-                                косули и другие обитатели леса.
-                            </p>
-                        </div>
-                    </div>
+                    <article class="place-card sun reveal" style="--d:.25s">
+                        <div class="place-icon">🦌</div>
+                        <h3>Барановичи</h3>
+                        <p>
+                            Особенное место — <strong>парк животных</strong>!
+                            Столько зверей сразу я ещё не видел: олени, лани,
+                            косули и другие обитатели леса.
+                        </p>
+                        <span class="place-tag">Парк животных</span>
+                    </article>
                 </div>
 
             </div>
@@ -144,36 +701,137 @@
     </section>
 
     <!-- Впечатления -->
-    <section class="py-5 bg-white" id="impressions">
+    <section id="impressions">
         <div class="container">
-            <h2 class="text-center mb-5 fw-bold">Мои впечатления</h2>
+            <div class="text-center mb-5 reveal">
+                <span class="eyebrow">Итоги</span>
+                <h2 class="section-title">Мои впечатления</h2>
+                <p class="section-sub">
+                    Несколько моментов, из которых и сложилось это лето
+                </p>
+            </div>
+
             <div class="row justify-content-center">
-                <div class="col-12 col-lg-8">
-                    <div class="alert alert-primary" role="alert">
-                        🚗 <strong>Много ездил на машине</strong> — дороги, новые города
-                        и любимая музыка в дороге.
+                <div class="col-12 col-lg-8 d-flex flex-column gap-4">
+
+                    <div class="impression imp-blue reveal" style="--d:.05s">
+                        <div class="imp-icon">🚗</div>
+                        <div>
+                            <h4>Много ездил на машине</h4>
+                            <p>Дороги, новые города и любимая музыка в дороге.</p>
+                        </div>
                     </div>
-                    <div class="alert alert-success" role="alert">
-                        🎉 <strong>Весело и классно</strong> — каждый день лета был
-                        наполнен чем-то интересным.
+
+                    <div class="impression imp-green reveal" style="--d:.15s">
+                        <div class="imp-icon">🎉</div>
+                        <div>
+                            <h4>Весело и классно</h4>
+                            <p>Каждый день лета был наполнен чем-то интересным.</p>
+                        </div>
                     </div>
-                    <div class="alert alert-warning" role="alert">
-                        🦌 <strong>Парк животных в Барановичах</strong> — самое яркое
-                        воспоминание этого лета!
+
+                    <div class="impression imp-amber reveal" style="--d:.25s">
+                        <div class="imp-icon">🦌</div>
+                        <div>
+                            <h4>Парк животных в Барановичах</h4>
+                            <p>Самое яркое воспоминание этого лета!</p>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Подвал -->
-    <footer class="py-4 text-center">
-        <div class="container">
-            <p class="mb-0">© 2026, Как я провёл лето? Круто, как ещё.</p>
+    <footer>
+        <div class="container text-center">
+            <div class="footer-brand">☀ Моё лето</div>
+            <p class="footer-note">© 2026, Как я провёл лето? Круто, как ещё.</p>
         </div>
     </footer>
 
+    <!-- Кнопка наверх -->
+    <button class="to-top" id="toTop" aria-label="Наверх">↑</button>
+
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        /* ---------- Элементы ---------- */
+        const nav      = document.getElementById('mainNav');
+        const progress = document.getElementById('progressBar');
+        const toTop    = document.getElementById('toTop');
+        const links    = document.querySelectorAll('.navbar .nav-link');
+        const sections = document.querySelectorAll('section[id], header[id]');
+
+        /* ---------- Скролл: навбар, прогресс, кнопка вверх ---------- */
+        let ticking = false;
+
+        function onScroll() {
+            const doc  = document.documentElement;
+            const top  = doc.scrollTop;
+            const max  = doc.scrollHeight - doc.clientHeight;
+            const ratio = max > 0 ? top / max : 0;
+
+            progress.style.transform = `scaleX(${ratio})`;
+            nav.classList.toggle('scrolled', top > 20);
+            toTop.classList.toggle('show', top > 420);
+
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(onScroll);
+                ticking = true;
+            }
+        }, { passive: true });
+
+        onScroll();
+
+        /* ---------- Кнопка наверх ---------- */
+        toTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        /* ---------- Появление блоков при скролле ---------- */
+        const revealObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        /* ---------- Подсветка активного пункта меню ---------- */
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    links.forEach(link => {
+                        link.classList.toggle(
+                            'active',
+                            link.getAttribute('href') === '#' + entry.target.id
+                        );
+                    });
+                }
+            });
+        }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+
+        sections.forEach(s => navObserver.observe(s));
+
+        /* ---------- Закрытие мобильного меню после клика ---------- */
+        const collapseEl = document.getElementById('navMenu');
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                if (collapseEl.classList.contains('show')) {
+                    bootstrap.Collapse.getOrCreateInstance(collapseEl).hide();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
